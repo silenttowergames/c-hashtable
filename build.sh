@@ -1,1 +1,1 @@
-gcc main.c HashTable.c -o main
+gcc main.c HashTable.c -lm -o main

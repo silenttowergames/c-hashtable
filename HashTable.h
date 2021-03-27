@@ -12,6 +12,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 #include <assert.h>
 #include <inttypes.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -31,6 +32,7 @@ typedef struct HashTable
 HashTable HashTable_New(int length);
 void HashTable_Expand(HashTable* hashTable, int length);
 int HashTable_GetIndex(HashTable* hashTable, uint64_t cell);
+int HashTable_Cell_GetIndex(HashTable* hashTable, int cellIndex, void* entity);
 void HashTable_Add(HashTable* hashTable, uint64_t cell, void* entity);
 void HashTable_Clean(HashTable* hashTable);
 uint64_t HashTable_SpatialCellKey(int sizeX, int sizeY, float X, float Y);

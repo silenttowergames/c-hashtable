@@ -65,6 +65,27 @@ int HashTable_GetIndex(HashTable* hashTable, uint64_t cell)
     return -1;
 }
 
+int HashTable_Cell_GetIndex(HashTable* hashTable, int cellIndex, void* entity)
+{
+    if(cellIndex >= hashTable->length)
+    {
+        printf("fail\n");
+        return -1;
+    }
+    
+    for(int i = 0; i < hashTable->lengths[cellIndex]; i++)
+    {
+        if(hashTable->entities[cellIndex][i] != entity)
+        {
+            continue;
+        }
+        
+        return i;
+    }
+    
+    return -1;
+}
+
 void HashTable_Add(HashTable* hashTable, uint64_t cell, void* entity)
 {
     assert(hashTable->length <= hashTable->allocated);
@@ -111,8 +132,8 @@ void HashTable_Clean(HashTable* hashTable)
 
 uint64_t HashTable_SpatialCellKey(int sizeX, int sizeY, float X, float Y)
 {
-    uint64_t uX = (int)(X / sizeX);
-    uint64_t uY = (int)(Y / sizeY);
+    uint64_t uX = (int)floorf(X / sizeX);
+    uint64_t uY = (int)floorf(Y / sizeY);
     
     return uX + (uY << 32);
 }

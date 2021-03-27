@@ -1,6 +1,7 @@
 #include "HashTable.h"
 
 #define EntityCount 8
+#define CellSize 400
 
 typedef struct Entity
 {
@@ -19,7 +20,10 @@ static void test(HashTable* hashTable, Entity* list)
         list[i].Right = list[i].Left + 1 + (rand() % 64);
         list[i].Bottom = list[i].Top + 1 + (rand() % 64);
         
-        HashTable_Add(hashTable, HashTable_SpatialCellKey(32, 32, list[i].Left, list[i].Top), &list[i]);
+        // NOTE: This method of assignment is overly basic!
+        // It assigns an entity to a cell based on its top-left position
+        // It may be physically present in other cells, though this code will not place it in those cells
+        HashTable_Add(hashTable, HashTable_SpatialCellKey(CellSize, CellSize, list[i].Left, list[i].Top), &list[i]);
     }
 }
 
@@ -31,13 +35,11 @@ int main()
     
     test(&hashTable, list);
     
-    HashTable_Clean(&hashTable);
+    uint64_t cell = HashTable_SpatialCellKey(CellSize, CellSize, list[2].Left, list[2].Top);
+    int cellIndex = HashTable_GetIndex(&hashTable, cell);
+    int entityIndex = HashTable_Cell_GetIndex(&hashTable, cellIndex, &list[2]);
     
-    test(&hashTable, list);
-    
-    HashTable_Clean(&hashTable);
-    
-    test(&hashTable, list);
+    printf("Index of %u (cell %" PRIu64 "): %d\n", &list[2], cell, entityIndex);
     
     for(int i = 0; i < hashTable.length; i++)
     {
@@ -46,7 +48,7 @@ int main()
         {
             Entity* entity = (Entity*)hashTable.entities[i][j];
             
-            printf("%fx%f\n", entity->Left, entity->Top);
+            printf("%u: %fx%f\n", entity, entity->Left, entity->Top);
         }
     }
     
